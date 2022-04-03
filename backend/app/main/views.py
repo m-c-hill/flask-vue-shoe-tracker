@@ -2,7 +2,7 @@ from flask import jsonify
 
 from .. import db
 from ..models import Brand, Shoe
-from ..schemas import brand_schema, brands_schema
+from ..schemas import brand_schema, brands_schema, shoe_schema, shoes_schema
 from . import main
 
 
@@ -35,7 +35,8 @@ def all_brands():
 
 @main.route("/all_shoes", methods=["GET"])
 def all_shoes():
-    return jsonify(Shoe.get_shoes())
+    all_brands = Brand.query.all()
+    return jsonify(brands_schema.dump(all_brands))
 
 
 @main.route("/shoe/<id>", methods=["GET"])
