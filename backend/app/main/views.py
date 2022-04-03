@@ -2,6 +2,7 @@ from flask import jsonify
 
 from .. import db
 from ..models import Brand, Shoe
+from ..schemas import brand_schema, brands_schema
 from . import main
 
 
@@ -20,14 +21,21 @@ def greetings():
 # ===================
 
 
+@main.route("/get_brand/<id>", methods=["GET", "POST"])
+def get_brand(id):
+    brand = db.session.query(Brand).get(id)
+    return jsonify(brand_schema.dump(brand))
+
+
 @main.route("/all_brands", methods=["GET"])
 def all_brands():
-    return jsonify(Brand.get_brands())
+    all_brands = Brand.query.all()
+    return jsonify(brands_schema.dump(all_brands))
 
 
 @main.route("/all_shoes", methods=["GET"])
 def all_shoes():
-    return "List of all shoes"
+    return jsonify(Shoe.get_shoes())
 
 
 @main.route("/shoe/<id>", methods=["GET"])
@@ -37,7 +45,7 @@ def shoe_by_id(id):
 
 @main.route("/new_brand", methods=["GET", "POST"])
 def new_brand():
-    return Brand.get_brands()
+    return None
 
 
 @main.route("/new_shoe", methods=["GET", "POST"])

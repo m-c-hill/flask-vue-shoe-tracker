@@ -2,12 +2,14 @@ import os
 import click
 
 from flask_migrate import Migrate, upgrade
+from app.schemas import ma
 
 from app import create_app, db
-from app.models import Brand
+from app.schemas import BrandSchema
 
 app = create_app(os.getenv("FLASK_CONFIG") or "default")
 migrate = Migrate(app, db)
+ma.init_app(app)
 
 
 @app.cli.command()
@@ -17,4 +19,3 @@ def deploy():
     upgrade()
 
     Brand.insert_brands()
-

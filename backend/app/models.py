@@ -1,3 +1,4 @@
+from re import M
 from app import db
 from typing import List
 from app.utils.brands import brand_names
@@ -38,3 +39,24 @@ class Shoe(db.Model):
     distance = db.Column(db.Integer)
     notes = db.Column(db.String(128))
     alert_distance = db.Column(db.Integer)
+
+    @staticmethod
+    def create(brand):
+        new_brand = Brand(brand=brand)
+        db.session.add(new_brand)
+        db.session.commit()
+
+    @staticmethod
+    def get_shoes() -> List[dict]:
+        return [
+            {
+                "id": i.id,
+                "brand_id": i.brand_id,
+                "model": i.model,
+                "nickname": i.nickname,
+                "distance": i.distance,
+                "notes": i.notes,
+                "alert_distance": i.alert_distance,
+            }
+            for i in Shoe.query.order_by("id").all()
+        ]
