@@ -21,27 +21,28 @@ def greetings():
 # ===================
 
 
-@main.route("/get_brand/<id>", methods=["GET", "POST"])
+@main.route("/brand/<id>", methods=["GET", "POST"])
 def get_brand(id):
     brand = db.session.query(Brand).get(id)
     return jsonify(brand_schema.dump(brand))
 
 
-@main.route("/all_brands", methods=["GET"])
+@main.route("/brands", methods=["GET"])
 def all_brands():
-    all_brands = Brand.query.all()
-    return jsonify(brands_schema.dump(all_brands))
-
-
-@main.route("/all_shoes", methods=["GET"])
-def all_shoes():
-    all_brands = Brand.query.all()
+    all_brands = db.session.query(Brand).all()
     return jsonify(brands_schema.dump(all_brands))
 
 
 @main.route("/shoe/<id>", methods=["GET"])
-def shoe_by_id(id):
-    return id
+def get_shoe(id):
+    shoe = db.session.query(Shoe).get(id)
+    return jsonify(shoe_schema.dump(shoe))
+
+
+@main.route("/shoes", methods=["GET"])
+def all_shoes():
+    all_shoes = db.session.query(Shoe).all()
+    return jsonify(shoes_schema.dump(all_shoes))
 
 
 @main.route("/new_brand", methods=["GET", "POST"])
