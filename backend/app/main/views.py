@@ -1,6 +1,8 @@
 from flask import jsonify
-from . import main
+
 from .. import db
+from ..models import Brand, Shoe
+from . import main
 
 
 @main.route("/")
@@ -20,7 +22,7 @@ def greetings():
 
 @main.route("/all_brands", methods=["GET"])
 def all_brands():
-    return jsonify(db.session.query(Brand).all())
+    return jsonify(Brand.get_brands())
 
 
 @main.route("/all_shoes", methods=["GET"])
@@ -35,9 +37,17 @@ def shoe_by_id(id):
 
 @main.route("/new_brand", methods=["GET", "POST"])
 def new_brand():
-    return "New brand"
+    return Brand.get_brands()
 
 
 @main.route("/new_shoe", methods=["GET", "POST"])
 def new_shoe():
     return "New shoe"
+
+
+# TODO:
+#   - Add dummy data to database: https://stackoverflow.com/questions/19334604/creating-seed-data-in-a-flask-migrate-or-alembic-migration
+#   - Create all endpoints
+#   - Write unit tests for end points
+#   - Continue with course: https://www.youtube.com/watch?v=lenV5aVOMp8
+#   - Watch front end course internet intro

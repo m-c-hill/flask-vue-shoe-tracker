@@ -1,4 +1,6 @@
 from app import db
+from typing import List
+from app.utils.brands import brand_names
 
 
 class Brand(db.Model):
@@ -6,6 +8,25 @@ class Brand(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     shoes = db.relationship("Shoe", backref="brands", lazy="dynamic")
+
+    @staticmethod
+    def create(brand):
+        new_brand = Brand(brand=brand)
+        db.session.add(new_brand)
+        db.session.commit()
+
+    @staticmethod
+    def insert_brands():
+        for b in brand_names:
+            brand = Brand.query.filter_by(name=b).first()
+            if brand is None:
+                brand = Brand(name=b)
+            db.session.add(brand)
+        db.session.commit()
+
+    @staticmethod
+    def get_brands() -> List[dict]:
+        return [{"id": i.id, "name": i.name} for i in Brand.query.order_by("id").all()]
 
 
 class Shoe(db.Model):
