@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.26.1",
     "bootstrap": "^4.6.0",
+    "bootstrap-vue": "^2.21.2",
     "core-js": "^3.8.3",
     "eslint-visitor-keys": "^3.3.0",
     "vue": "^2.6.14",

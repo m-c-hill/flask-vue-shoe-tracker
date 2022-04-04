@@ -30,7 +30,7 @@ def get_brand(id):
 @main.route("/brands", methods=["GET"])
 def all_brands():
     all_brands = db.session.query(Brand).all()
-    return jsonify(brands_schema.dump(all_brands))
+    return jsonify({"brands": brands_schema.dump(all_brands)})
 
 
 @main.route("/shoe/<id>", methods=["GET"])
@@ -42,7 +42,7 @@ def get_shoe(id):
 @main.route("/shoes", methods=["GET"])
 def all_shoes():
     all_shoes = db.session.query(Shoe).all()
-    return jsonify(shoes_schema.dump(all_shoes))
+    return jsonify({"shoes": shoes_schema.dump(all_shoes)})
 
 
 @main.route("/new_brand", methods=["GET", "POST"])

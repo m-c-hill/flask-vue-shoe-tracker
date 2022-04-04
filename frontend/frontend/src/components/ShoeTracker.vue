@@ -8,11 +8,12 @@
       />
       <h1>Shoe Tracker</h1>
       <br />
+      <button type="button" class="btn btn-success">Add Shoe</button>
+      <br />
+      <br />
       <div class="row">
         <div class="col-sm-12"></div>
         <!-- Alert message -->
-        <button type="button" class="btn btn-success">Add Shoe</button>
-        <br />
         <table class="table">
           <thead>
             <tr>
@@ -26,13 +27,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr v-for="(shoe, index) in shoes" :key="index">
               <!-- Dummy data to be removed -->
-              <td>Saucony</td>
-              <td>Endorphin Speed 2</td>
-              <td>Jan '22</td>
-              <td>304</td>
-              <td>Reserved for track and tempo sessions.</td>
+              <td>{{ shoe.brand_id }}</td>
+              <td>{{ shoe.model }}</td>
+              <td>{{ shoe.nickname }}</td>
+              <td>{{ shoe.distance }}</td>
+              <td>{{ shoe.notes }}</td>
               <td>
                 <div class="btn-group" role="group">
                   <button type="button" class="btn btn-info btn-sm">
@@ -50,3 +51,31 @@
     </div>
   </div>
 </template>
+
+<script>
+import axios from "axios";
+export default {
+  data() {
+    return {
+      shoes: [],
+    };
+  },
+
+  methods: {
+    getShoes() {
+      const path = "http://localhost:5000/shoes";
+      axios
+        .get(path)
+        .then((res) => {
+          this.shoes = res.data.shoes;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+  },
+  created() {
+    this.getShoes();
+  },
+};
+</script>
