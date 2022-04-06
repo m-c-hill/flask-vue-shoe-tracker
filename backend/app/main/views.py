@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 
 from .. import db
 from ..models import Brand, Shoe
@@ -24,35 +24,45 @@ def greetings():
 @main.route("/brand/<id>", methods=["GET", "POST"])
 def get_brand(id):
     brand = db.session.query(Brand).get(id)
-    return jsonify(brand_schema.dump(brand))
+    return {"success": True, "resource": jsonify(brand_schema.dump(brand))}
 
 
 @main.route("/brands", methods=["GET"])
 def all_brands():
     all_brands = db.session.query(Brand).all()
-    return jsonify({"brands": brands_schema.dump(all_brands)})
+    return {
+        "success": True,
+        "resource": jsonify({"brands": brands_schema.dump(all_brands)}),
+    }
 
 
 @main.route("/shoe/<id>", methods=["GET"])
 def get_shoe(id):
     shoe = db.session.query(Shoe).get(id)
-    return jsonify(shoe_schema.dump(shoe))
+    return {"success": True, "resource": jsonify(shoe_schema.dump(shoe))}
 
 
 @main.route("/shoes", methods=["GET"])
 def all_shoes():
     all_shoes = db.session.query(Shoe).all()
-    return jsonify({"shoes": shoes_schema.dump(all_shoes)})
-
-
-@main.route("/new_brand", methods=["GET", "POST"])
-def new_brand():
-    return None
+    return {
+        "success": True,
+        "resource": jsonify({"shoes": shoes_schema.dump(all_shoes)}),
+    }
 
 
 @main.route("/new_shoe", methods=["GET", "POST"])
-def new_shoe():
-    return "New shoe"
+def add_shoe():
+    response_object = {"status": "success"}
+    post_data = request.get_json()
+    shoe = Shoe(**post_data)
+    db.session.add(shoe)
+    db.session.commit()
+
+    return {"success": True, "resource": shoe}, 200
+
+
+# TODO: add "abort" method from Werkzeug; add success, resource method to all endpoints
 
 
 # TODO:

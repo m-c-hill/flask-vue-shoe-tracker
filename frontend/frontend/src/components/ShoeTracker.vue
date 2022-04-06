@@ -6,7 +6,7 @@
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/sketchy/bootstrap.min.css"
       />
-      <h1>Shoe Tracker</h1>
+      <h1>Shoe Tracker 👟</h1>
       <br />
       <button type="button" class="btn btn-success">Add Shoe</button>
       <br />
