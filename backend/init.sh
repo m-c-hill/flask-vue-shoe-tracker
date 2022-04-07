@@ -1,8 +1,8 @@
 # Delete after development
 flask shell
 
-from app.models import Shoe
 from app import db
+from app.models import Shoe
 
 shoe_1 = Shoe(brand_id=10, model="Ghost 14", nickname="blue",distance=78, notes=None, alert_distance=500)
 shoe_2 = Shoe(brand_id=11, model="Endorphin Speed 2", nickname="green",distance=120, notes=None, alert_distance=500)

@@ -1,6 +1,7 @@
 from re import M
-from app import db
 from typing import List
+
+from app import db
 from app.utils.brands import brand_names
 
 
@@ -38,7 +39,7 @@ class Shoe(db.Model):
     nickname = db.Column(db.String(64), unique=True)
     distance = db.Column(db.Integer)
     notes = db.Column(db.String(128))
-    alert_distance = db.Column(db.Integer)
+    alert_distance = db.Column(db.Integer, default=500)
 
     @staticmethod
     def create(brand):

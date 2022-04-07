@@ -1,4 +1,5 @@
 from flask import jsonify, request
+from sqlalchemy.exc import IntegrityError
 
 from .. import db
 from ..models import Brand, Shoe
@@ -29,19 +30,34 @@ def greetings():
 @main.route("/brand/<id>", methods=["GET", "POST"])
 def get_brand(id):
     brand = db.session.query(Brand).get(id)
-    return jsonify(brand_schema.dump(brand))
+    if brand:
+        return jsonify({"success": True, "resource": brand_schema.dump(brand)}), 200
+    return {
+        "success": False,
+        "message": f"Brand (id={id} not found",
+    }, 404
 
 
 @main.route("/brands", methods=["GET"])
 def all_brands():
     all_brands = db.session.query(Brand).all()
-    return {"brands": brands_schema.dump(all_brands)}
+    return (
+        jsonify(
+            {"success": True, "resource": {"brands": brands_schema.dump(all_brands)}}
+        ),
+        200,
+    )
 
 
 @main.route("/shoe/<id>", methods=["GET"])
 def get_shoe(id):
     shoe = db.session.query(Shoe).get(id)
-    return {"success": True, "resource": jsonify(shoe_schema.dump(shoe))}
+    if shoe:
+        return jsonify({"success": True, "resource": shoe_schema.dump(shoe)}), 200
+    return {
+        "success": False,
+        "message": f"Shoe (id={id} not found",
+    }, 404
 
 
 @main.route("/shoes", methods=["GET"])
@@ -62,8 +78,14 @@ def all_shoes():
 def add_shoe():
     post_data = request.get_json()
     shoe = Shoe(**post_data)
-    db.session.add(shoe)
-    db.session.commit()
+    try:
+        db.session.add(shoe)
+        db.session.commit()
+    except IntegrityError:
+        return {
+            "success": False,
+            "message": f"Nickname '{post_data['nickname']}' has already been assigned to another shoe",
+        }, 422
 
     return {"success": True, "resource": shoe_schema.dump(shoe)}, 200
 
@@ -78,10 +100,5 @@ def remove_shoe(id: int):
     return f"Shoe (id={id}) not found", 404
 
 
-# TODO: add "abort" method from Werkzeug; add success, resource method to all endpoints
-
-
-# TODO:
-#   - Write unit tests for end points
-#   - Continue with course: https://www.youtube.com/watch?v=lenV5aVOMp8
-#   - Watch front end course internet intro
+# TODO: PUT method to update shoe values
+# TODO: Write unit tests for all end points.
