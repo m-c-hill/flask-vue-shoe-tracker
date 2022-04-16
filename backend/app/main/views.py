@@ -37,7 +37,7 @@ def get_brand_by_id(id):
 
     return {
         "success": False,
-        "message": f"Brand (id={id} not found",
+        "message": f"Brand id={id} not found",
     }, 404
 
 
@@ -69,7 +69,7 @@ def get_shoe_by_id(id):
 
     return {
         "success": False,
-        "message": f"Shoe (id={id} not found",
+        "message": f"Shoe id={id} not found",
     }, 404
 
 

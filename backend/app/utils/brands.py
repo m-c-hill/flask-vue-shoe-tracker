@@ -1,22 +1,25 @@
-brand_names = [
-    "Nike",
-    "Adidas",
-    "New Balance",
-    "Asics",
-    "Reebok",
-    "Hoka One One",
-    "Puma",
-    "Altra",
-    "Newton",
-    "Brooks",
-    "Saucony",
-    "Mizuno",
-    "Salomon",
-    "Skechers",
-    "Under Armour",
-    "APL",
-    "Merrell",
-    "Veja",
-    "La Sportiva",
-    "On-Running",
-]
+def create_brands(db, Brand):
+    """
+    Initialise brands table with brand data
+    """
+    db.session.add(Brand("Nike"))
+    db.session.add(Brand("Adidas"))
+    db.session.add(Brand("New Balance"))
+    db.session.add(Brand("Asics"))
+    db.session.add(Brand("Reebok"))
+    db.session.add(Brand("Hoka One One"))
+    db.session.add(Brand("Puma"))
+    db.session.add(Brand("Altra"))
+    db.session.add(Brand("Newton"))
+    db.session.add(Brand("Brooks"))
+    db.session.add(Brand("Saucony"))
+    db.session.add(Brand("Mizuno"))
+    db.session.add(Brand("Salomon"))
+    db.session.add(Brand("Sketchers"))
+    db.session.add(Brand("Under Armour"))
+    db.session.add(Brand("APL"))
+    db.session.add(Brand("Merrell"))
+    db.session.add(Brand("Veja"))
+    db.session.add(Brand("La Sportiva"))
+    db.session.add(Brand("On-Running"))
+    db.session.commit()
