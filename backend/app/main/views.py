@@ -9,37 +9,16 @@ from . import main
 
 @main.route("/")
 def index():
-    return "Hello World"
-
-
-# ==============
-# Dummy endpoint
-# ==============
-
-
-@main.route("/shark", methods=["GET"])
-def greetings():
-    return "Shark! 🦈"
+    return "Shoe Tracker API"
 
 
 # ===================
-# Shoe app endpoints
+# Brand endpoints
 # ===================
-
-
-@main.route("/brand/<id>", methods=["GET", "POST"])
-def get_brand(id):
-    brand = db.session.query(Brand).get(id)
-    if brand:
-        return jsonify({"success": True, "resource": brand_schema.dump(brand)}), 200
-    return {
-        "success": False,
-        "message": f"Brand (id={id} not found",
-    }, 404
 
 
 @main.route("/brands", methods=["GET"])
-def all_brands():
+def get_all_brands():
     all_brands = db.session.query(Brand).all()
     return (
         jsonify(
@@ -49,19 +28,26 @@ def all_brands():
     )
 
 
-@main.route("/shoe/<id>", methods=["GET"])
-def get_shoe(id):
-    shoe = db.session.query(Shoe).get(id)
-    if shoe:
-        return jsonify({"success": True, "resource": shoe_schema.dump(shoe)}), 200
+@main.route("/brands/<id>", methods=["GET"])
+def get_brand_by_id(id):
+    brand = db.session.query(Brand).get(id)
+
+    if brand:
+        return jsonify({"success": True, "resource": brand_schema.dump(brand)}), 200
+
     return {
         "success": False,
-        "message": f"Shoe (id={id} not found",
+        "message": f"Brand (id={id} not found",
     }, 404
 
 
+# ===================
+# Shoe endpoints
+# ===================
+
+
 @main.route("/shoes", methods=["GET"])
-def all_shoes():
+def get_all_shoes():
     all_shoes = db.session.query(Shoe).all()
     return (
         jsonify(
@@ -74,8 +60,22 @@ def all_shoes():
     )
 
 
-@main.route("/new_shoe", methods=["GET", "POST"])
-def add_shoe():
+@main.route("/shoes/<id>", methods=["GET"])
+def get_shoe_by_id(id):
+    shoe = db.session.query(Shoe).get(id)
+
+    if shoe:
+        return jsonify({"success": True, "resource": shoe_schema.dump(shoe)}), 200
+
+    return {
+        "success": False,
+        "message": f"Shoe (id={id} not found",
+    }, 404
+
+
+@main.route("/shoes", methods=["POST"])
+def create_new_shoe():
+    breakpoint()
     post_data = request.get_json()
     shoe = Shoe(**post_data)
     try:
@@ -90,15 +90,31 @@ def add_shoe():
     return {"success": True, "resource": shoe_schema.dump(shoe)}, 200
 
 
-@main.route("/remove_shoe/<id>", methods=["GET", "DELETE"])
-def remove_shoe(id: int):
+@main.route("/shoes/<id>", methods=["DELETE"])
+def delete_shoe_by_id(id: int):
     if db.session.query(Shoe).get(id):
         shoe = db.session.get(Shoe, id)
         db.session.delete(shoe)
         db.session.commit()
-        return f"Shoe (id={id}) deleted", 200
-    return f"Shoe (id={id}) not found", 404
+        return {"success": True, "message": f"Shoe (id={id}) deleted"}, 200
+
+    return {"success": False, "message": f"Shoe (id={id}) not found"}, 404
 
 
-# TODO: PUT method to update shoe values
-# TODO: Write unit tests for all end points.
+@main.route("/shoes/<id>", methods=["PUT"])
+def update_shoe(id: int):
+    update_data = request.get_json()
+    shoe = db.session.get(Shoe, id)
+
+    if shoe:
+        shoe.brand_id = update_data["brand_id"]
+        shoe.model = update_data["model"]
+        shoe.nickname = update_data["nickname"]
+        shoe.distance = update_data["distance"]
+        shoe.notes = update_data["notes"]
+        shoe.alert_distance = update_data["alert_distance"]
+        db.session.commit()
+
+        return jsonify({"success": True, "resource": shoe_schema.dump(shoe)}), 200
+
+    return {"success": False, "message": f"Shoe (id={id}) not found"}, 404

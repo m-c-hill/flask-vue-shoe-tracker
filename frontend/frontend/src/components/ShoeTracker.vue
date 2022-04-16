@@ -6,9 +6,20 @@
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/sketchy/bootstrap.min.css"
       />
-      <h1>Shoe Tracker 👟</h1>
+      <h1 class="text-center bg-primary text-white" style="border-radius: 12px">
+        Shoe Tracker 👟
+      </h1>
       <br />
-      <button type="button" class="btn btn-success">Add Shoe</button>
+      <btn-toolbar>
+        <button
+          type="button"
+          class="btn btn-success btn-sm"
+          v-b-modal.shoe-modal
+        >
+          Add Shoe
+        </button>
+        <button type="button" class="btn btn-warning btn-sm">Log Run</button>
+      </btn-toolbar>
       <br />
       <br />
       <div class="row">
@@ -48,6 +59,41 @@
           </tbody>
         </table>
       </div>
+      <footer
+        class="bg-primary text-white text-center"
+        style="border-radius: 12px"
+      >
+        Test
+      </footer>
+
+      <!-- Modal -->
+
+      <b-modal
+        ref="addShoeModal"
+        id="shoe-modal"
+        title="Add a New Shoe"
+        hide-backdrop
+        hide-footer
+      >
+        <b-form @submit="onSubmit" @reset="onReset" class="w-100">
+          <b-form-group
+            id="form-title-group"
+            label="Title:"
+            label-for="form-title-input"
+          >
+            <b-form-input
+              id="form-title-input"
+              type="text"
+              v-model="addShoeForm.model"
+              required
+              placeholder="Enter Shoe"
+            ></b-form-input>
+          </b-form-group>
+
+          <button type="submit" variant="primary">Submit</button>
+          <button type="reset" variant="primary">Reset</button>
+        </b-form>
+      </b-modal>
     </div>
   </div>
 </template>
@@ -58,20 +104,51 @@ export default {
   data() {
     return {
       shoes: [],
+      addShoeForm: {
+        model: "",
+      },
     };
   },
 
   methods: {
+    // GET Function
     getShoes() {
       const path = "http://localhost:5000/shoes";
       axios
         .get(path)
         .then((res) => {
-          this.shoes = res.data.shoes;
+          this.shoes = res.data.resource.shoes;
         })
         .catch((err) => {
           console.error(err);
         });
+    },
+    // POST Function
+    addShoe(payload) {
+      const path = "http://localhost:5000/new_shoe";
+      axios.post(path, payload).then(() => {
+        this.getShoes();
+      });
+    },
+
+    initForm() {
+      this.addShoeForm.model = "";
+    },
+
+    onSubmit(event) {
+      event.preventDefault();
+      this.$refs.addShoeModal.hide();
+      const payload = {
+        model: this.addShoeForm.title,
+      };
+      this.addShoe(payload);
+      this.initForm;
+    },
+
+    onReset(event) {
+      event.preventDefault();
+      this.$ref.addShoeModal.hide();
+      this.initForm();
     },
   },
   created() {

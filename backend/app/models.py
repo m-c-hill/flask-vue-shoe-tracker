@@ -1,4 +1,4 @@
-from re import M
+from collections import UserList
 from typing import List
 
 from app import db
@@ -33,31 +33,15 @@ class Brand(db.Model):
 
 class Shoe(db.Model):
     __tablename__ = "shoes"
+
     id = db.Column(db.Integer, primary_key=True)
     brand_id = db.Column(db.Integer, db.ForeignKey("brands.id"))
+    brand = db.relationship("Brand", uselist=False, lazy="select")
     model = db.Column(db.String(64))
     nickname = db.Column(db.String(64), unique=True)
     distance = db.Column(db.Integer)
     notes = db.Column(db.String(128))
     alert_distance = db.Column(db.Integer, default=500)
 
-    @staticmethod
-    def create(brand):
-        new_brand = Brand(brand=brand)
-        db.session.add(new_brand)
-        db.session.commit()
 
-    @staticmethod
-    def get_shoes() -> List[dict]:
-        return [
-            {
-                "id": i.id,
-                "brand_id": i.brand_id,
-                "model": i.model,
-                "nickname": i.nickname,
-                "distance": i.distance,
-                "notes": i.notes,
-                "alert_distance": i.alert_distance,
-            }
-            for i in Shoe.query.order_by("id").all()
-        ]
+# TODO: Add nullable=False to applicable fields; update endpoints to reflect this

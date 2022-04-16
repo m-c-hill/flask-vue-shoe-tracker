@@ -10,16 +10,18 @@ class BrandSchema(ma.Schema):
 
 class ShoeSchema(ma.Schema):
     class Meta:
-        # TODO: replace brand_id with brand name?
         fields = (
             "id",
-            "brand_id",
+            "brand",
             "model",
             "nickname",
             "distance",
             "notes",
             "alert_distance",
         )
+        include_fk = True
+
+    brand = ma.Function(lambda obj: brand_schema.dump(obj.brand))
 
 
 brand_schema = BrandSchema()
