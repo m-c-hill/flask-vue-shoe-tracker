@@ -39,8 +39,7 @@
           </thead>
           <tbody>
             <tr v-for="(shoe, index) in shoes" :key="index">
-              <!-- Dummy data to be removed -->
-              <td>{{ shoe.brand_id }}</td>
+              <td>{{ shoe.brand.name }}</td>
               <td>{{ shoe.model }}</td>
               <td>{{ shoe.nickname }}</td>
               <td>{{ shoe.distance }}</td>
@@ -86,7 +85,42 @@
               type="text"
               v-model="addShoeForm.model"
               required
-              placeholder="Enter Shoe"
+              placeholder="Select brand"
+            ></b-form-input>
+            <b-form-input
+              id="form-title-input"
+              type="text"
+              v-model="addShoeForm.model"
+              required
+              placeholder="Model"
+            ></b-form-input>
+            <b-form-input
+              id="form-title-input"
+              type="text"
+              v-model="addShoeForm.model"
+              required
+              placeholder="Nickname"
+            ></b-form-input>
+            <b-form-input
+              id="form-title-input"
+              type="text"
+              v-model="addShoeForm.model"
+              required
+              placeholder="Distance"
+            ></b-form-input>
+            <b-form-input
+              id="form-title-input"
+              type="range"
+              v-model="addShoeForm.model"
+              required
+              placeholder="Alert Distance"
+            ></b-form-input>
+            <b-form-input
+              id="form-title-input"
+              type="text"
+              v-model="addShoeForm.model"
+              required
+              placeholder="Notes"
             ></b-form-input>
           </b-form-group>
 
