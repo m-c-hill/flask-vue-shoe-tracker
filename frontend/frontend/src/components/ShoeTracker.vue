@@ -10,16 +10,21 @@
         Shoe Tracker 👟
       </h1>
       <br />
-      <btn-toolbar>
-        <button
+
+      <b-alert show variant="success" v-if="showMessage">TEST</b-alert>
+
+      <b-btn-toolbar>
+        <b-button
           type="button"
           class="btn btn-success btn-sm"
           v-b-modal.shoe-modal
         >
           Add Shoe
-        </button>
-        <button type="button" class="btn btn-warning btn-sm">Log Run</button>
-      </btn-toolbar>
+        </b-button>
+        <b-button type="button" class="btn btn-warning btn-sm"
+          >Log Run</b-button
+        >
+      </b-btn-toolbar>
       <br />
       <br />
       <div class="row">
@@ -46,10 +51,19 @@
               <td>{{ shoe.notes }}</td>
               <td>
                 <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-info btn-sm">
+                  <button
+                    type="button"
+                    class="btn btn-info btn-sm"
+                    v-b-modal.shoe-update-modal
+                    @click="editShoe(shoe)"
+                  >
                     Update
                   </button>
-                  <button type="button" class="btn btn-danger btn-sm">
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    @click="deleteShoe(shoe)"
+                  >
                     Delete
                   </button>
                 </div>
@@ -65,8 +79,7 @@
         Test
       </footer>
 
-      <!-- Modal -->
-
+      <!-- New Shoe Modal -->
       <b-modal
         ref="addShoeModal"
         id="shoe-modal"
@@ -75,57 +88,155 @@
         hide-footer
       >
         <b-form @submit="onSubmit" @reset="onReset" class="w-100">
-          <b-form-group
-            id="form-title-group"
-            label="Title:"
-            label-for="form-title-input"
-          >
-            <b-form-input
-              id="form-title-input"
+          <b-form-group id="form-title-group" label="Shoe Details">
+            <b-form-select
+              id="form-brand-select"
               type="text"
-              v-model="addShoeForm.model"
-              required
-              placeholder="Select brand"
-            ></b-form-input>
+              v-model="addShoeForm.brand"
+              :options="brands"
+              value-field="id"
+              text-field="name"
+              placeholder="Brand"
+            >
+              <!-- <select v-model="brandSelect" class="form-control">
+                <option v-for="brand in brands" :key="brand.id" :value="name">
+                  {{ brand.name }}
+                </option>
+              </select> -->
+            </b-form-select>
             <b-form-input
-              id="form-title-input"
+              id="form-model-input"
               type="text"
               v-model="addShoeForm.model"
               required
               placeholder="Model"
             ></b-form-input>
             <b-form-input
-              id="form-title-input"
+              id="form-nickname-input"
               type="text"
-              v-model="addShoeForm.model"
+              v-model="addShoeForm.nickname"
               required
               placeholder="Nickname"
             ></b-form-input>
+          </b-form-group>
+
+          <b-form-group id="form-distance-group" label="Distance (km)">
+            <b-form-input
+              id="form-distance-input"
+              type="number"
+              v-model="addShoeForm.distance"
+              placeholder="Distance (km)"
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group
+            id="form-alert-distance-group"
+            label="Alert Distance (km)"
+          >
+            <b-form-input
+              id="form-alert-distance-input"
+              type="number"
+              v-model="addShoeForm.alertDistance"
+              placeholder="Alert Distance (km)"
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group
+            id="form-notes-group"
+            label="Shoe Details"
+            label-for="form-title-input"
+          >
             <b-form-input
               id="form-title-input"
               type="text"
-              v-model="addShoeForm.model"
-              required
-              placeholder="Distance"
-            ></b-form-input>
-            <b-form-input
-              id="form-title-input"
-              type="range"
-              v-model="addShoeForm.model"
-              required
-              placeholder="Alert Distance"
-            ></b-form-input>
-            <b-form-input
-              id="form-title-input"
-              type="text"
-              v-model="addShoeForm.model"
-              required
+              v-model="addShoeForm.notes"
               placeholder="Notes"
             ></b-form-input>
           </b-form-group>
 
-          <button type="submit" variant="primary">Submit</button>
-          <button type="reset" variant="primary">Reset</button>
+          <!-- Buttons to submit and reset -->
+          <b-button type="submit" variant="outline-info">Submit</b-button>
+          <b-button type="reset" variant="outline-danger">Reset</b-button>
+        </b-form>
+      </b-modal>
+
+      <!-- Update Shoe Modal -->
+      <b-modal
+        ref="editShoeModal"
+        id="shoe-update-modal"
+        title="Update Shoe"
+        hide-backdrop
+        hide-footer
+      >
+        <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
+          <b-form-group id="form-title-group" label="Shoe Details">
+            <b-form-select
+              id="form-brand-select"
+              type="text"
+              v-model="editShoeForm.brand"
+              :options="brands"
+              value-field="id"
+              text-field="name"
+              placeholder="Brand"
+            >
+              <!-- <select v-model="brandSelect" class="form-control">
+                <option v-for="brand in brands" :key="brand.id" :value="name">
+                  {{ brand.name }}
+                </option>
+              </select> -->
+            </b-form-select>
+            <b-form-input
+              id="form-model-input"
+              type="text"
+              v-model="editShoeForm.model"
+              required
+              placeholder="Model"
+            ></b-form-input>
+            <b-form-input
+              id="form-nickname-input"
+              type="text"
+              v-model="editShoeForm.nickname"
+              required
+              placeholder="Nickname"
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group id="form-distance-group" label="Distance (km)">
+            <b-form-input
+              id="form-distance-input"
+              type="number"
+              v-model="editShoeForm.distance"
+              placeholder="Distance (km)"
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group
+            id="form-alert-distance-group"
+            label="Alert Distance (km)"
+          >
+            <b-form-input
+              id="form-alert-distance-input"
+              type="number"
+              v-model="editShoeForm.alertDistance"
+              placeholder="Alert Distance (km)"
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group
+            id="form-notes-group"
+            label="Shoe Details"
+            label-for="form-title-input"
+          >
+            <b-form-input
+              id="form-title-input"
+              type="text"
+              v-model="editShoeForm.notes"
+              placeholder="Notes"
+            ></b-form-input>
+          </b-form-group>
+          <!-- Buttons to update and cancel -->
+          <b-button-group>
+            <b-button type="submit" variant="outline-info">Update</b-button>
+            <b-button type="reset" variant="outline-danger">Cancel</b-button>
+          </b-button-group>
         </b-form>
       </b-modal>
     </div>
@@ -137,9 +248,23 @@ import axios from "axios";
 export default {
   data() {
     return {
+      brands: [],
       shoes: [],
       addShoeForm: {
+        brand: "",
         model: "",
+        nickname: "",
+        distance: "",
+        alertDistance: "",
+        notes: "",
+      },
+      editShoeForm: {
+        brand: "",
+        model: "",
+        nickname: "",
+        distance: "",
+        alertDistance: "",
+        notes: "",
       },
     };
   },
@@ -157,36 +282,126 @@ export default {
           console.error(err);
         });
     },
+    getBrands() {
+      const path = "http://localhost:5000/brands";
+      axios
+        .get(path)
+        .then((res) => {
+          this.shoes = res.data.resource.brands;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
     // POST Function
     addShoe(payload) {
-      const path = "http://localhost:5000/new_shoe";
-      axios.post(path, payload).then(() => {
-        this.getShoes();
-      });
+      const path = "http://localhost:5000/shoes";
+      axios
+        .post(path, payload)
+        .then(() => {
+          this.getShoes();
+          this.message = "New Shoe Added!";
+          this.showMessage = true;
+        })
+        .catch((err) => {
+          console.error(err);
+          this.getShoes();
+        });
+    },
+    // DELETE Function
+    deleteShoe(payload) {
+      const path = `http://localhost:5000/shoes/${payload.id}`;
+      axios
+        .delete(path)
+        .then(() => {
+          this.getShoes();
+          this.message = "Shoe Deleted!";
+          this.showMessage = true;
+        })
+        .catch((err) => {
+          console.error(err);
+          this.getShoes();
+        });
     },
 
     initForm() {
       this.addShoeForm.model = "";
+      this.brand_id = "";
+      this.model = "";
+      this.nickname = "";
+      this.distance = "";
+      this.alertDistance = "";
+      this.notes = "";
     },
-
+    // For create modal to submit a new shoe
     onSubmit(event) {
       event.preventDefault();
       this.$refs.addShoeModal.hide();
       const payload = {
-        model: this.addShoeForm.title,
+        brand_id: this.addShoeForm.brand_id,
+        model: this.addShoeForm.model,
+        nickname: this.addShoeForm.nickname,
+        distance: this.addShoeForm.distance,
+        alert_distance: this.addShoeForm.alertDistance,
+        notes: this.notes,
       };
       this.addShoe(payload);
       this.initForm;
     },
 
+    // For update modal to submit a new shoe
+    onSubmitUpdate(event) {
+      event.preventDefault();
+      this.$refs.addShoeModal.hide();
+      const payload = {
+        brand_id: this.editShoeForm.brand_id,
+        model: this.editShoeForm.model,
+        nickname: this.editShoeForm.nickname,
+        distance: this.editShoeForm.distance,
+        alert_distance: this.editShoeForm.alertDistance,
+        notes: this.notes,
+      };
+      this.updateShoe(payload, this.editForm.id);
+      this.initForm;
+    },
+
     onReset(event) {
       event.preventDefault();
-      this.$ref.addShoeModal.hide();
+      this.$refs.addShoeModal.hide();
       this.initForm();
+    },
+    /// PUT method
+    updateShoe(payload, shoeID) {
+      console.log(shoeID);
+      const path = `http://localhost:5000/shoes/${shoeID}`;
+      axios
+        .put(path, payload)
+        .then(() => {
+          this.getShoes();
+          this.message = "Shoe Updated!";
+          this.showMessage = true;
+        })
+        .catch((err) => {
+          console.error(err);
+          this.getShoes();
+        });
+    },
+
+    editShoe(shoe) {
+      this.editShoeForm = shoe;
+    },
+
+    onResetUpdate(event) {
+      event.preventDefault();
+      this.$refs.editGameModal.hide();
+      this.initForm();
+      this.getShoes();
     },
   },
   created() {
+    this.getBrands();
     this.getShoes();
+    this.showMessage = false;
   },
 };
 </script>

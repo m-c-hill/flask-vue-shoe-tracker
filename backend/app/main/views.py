@@ -75,8 +75,12 @@ def get_shoe_by_id(id):
 
 @main.route("/shoes", methods=["POST"])
 def create_new_shoe():
-    breakpoint()
     post_data = request.get_json()
+
+    #### FOR TESTING
+    post_data["brand_id"] = 1
+    ####
+
     shoe = Shoe(**post_data)
     try:
         db.session.add(shoe)
@@ -91,7 +95,7 @@ def create_new_shoe():
 
 
 @main.route("/shoes/<id>", methods=["DELETE"])
-def delete_shoe_by_id(id: int):
+def remove_shoe(id: int):
     if db.session.query(Shoe).get(id):
         shoe = db.session.get(Shoe, id)
         db.session.delete(shoe)
@@ -103,6 +107,7 @@ def delete_shoe_by_id(id: int):
 
 @main.route("/shoes/<id>", methods=["PUT"])
 def update_shoe(id: int):
+    breakpoint()
     update_data = request.get_json()
     shoe = db.session.get(Shoe, id)
 
