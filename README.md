@@ -25,7 +25,7 @@ flask run
 cd frontend/frontend
 npm run serve
 ```
-4. Open https://localhost/8080/shoes to start shoe tracker application.
+4. Open https://localhost/8080/shoes to launch the shoe tracker application.
 
 ## Example Usage
 
